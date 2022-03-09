@@ -515,9 +515,9 @@ window.addEventListener("DOMContentLoaded", () => {
       statusMessage.textContent = message.loading;
       form.append(statusMessage);
 
-      const request = new XMLHttpRequest();
-      request.open("POST", "server.php");
-      request.setRequestHeader("Content-type", "application/json");
+      // const request = new XMLHttpRequest();
+      // request.open("POST", "server.php");
+      // request.setRequestHeader("Content-type", "application/json");
 
       const formData = new FormData(form);
 
@@ -525,22 +525,71 @@ window.addEventListener("DOMContentLoaded", () => {
       formData.forEach(function (value, key) {
         object[key] = value;
       });
-      const json = JSON.stringify(object);
 
-      request.send(json);
+      // const json = JSON.stringify(object);
 
-      request.addEventListener("load", () => {
-        if (request.status === 200) {
-          console.log(request.response);
+      // request.send(json);
+
+      // fetch
+
+      fetch("server.php", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        // body: formData,
+        body: JSON.stringify(object),
+      })
+        .then((data) => data.text())
+        .then((data) => {
+          console.log(data);
           statusMessage.textContent = message.success;
           form.reset();
           setTimeout(() => {
             statusMessage.remove();
           }, 4000);
-        } else {
+        })
+        .catch(() => {
           statusMessage.textContent = message.error;
-        }
-      });
+        })
+        .finally(() => {
+          form.reset();
+        });
+
+      // request.addEventListener("load", () => {
+      //   if (request.status === 200) {
+      //     console.log(request.response);
+      //     statusMessage.textContent = message.success;
+      //     form.reset();
+      //     setTimeout(() => {
+      //       statusMessage.remove();
+      //     }, 4000);
+      //   } else {
+      //     statusMessage.textContent = message.error;
+      //   }
+      // });
     });
   }
+  /*
+  // fetch  API
+
+  // fetch("https://jsonplaceholder.typicode.com/todos/1")
+  //   .then((response) => response.json())
+  //   .then((json) => console.log(json));
+
+  // fetch("https://jsonplaceholder.typicode.com/todos")
+  //   .then((response) => response.json())
+  //   .then((json) => console.log(json));
+
+  fetch("https://jsonplaceholder.typicode.com/posts", {
+    method: "POST",
+    body: JSON.stringify({ name: "JS" }),
+    headers: {
+      "Content-type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => console.log(json));
+    
+  */
 });
